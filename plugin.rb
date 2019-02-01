@@ -36,7 +36,7 @@ after_initialize do
           p = Post.find_by_id @opts[:post_id]
          # result['CC'] = "#{p.user.name} <#{p.user.email}>"
           result['Reply-to'] = reply_by_email_address
-          result['From'] = "#{p.user.name} via CAMAP <#{p.user.email}>"
+          result['From'] = "#{p.user.name} (#{p.user.email}) <discourse@forum.camapcanada.ca>"
         end
       else
         result['Reply-To'] = from_value
