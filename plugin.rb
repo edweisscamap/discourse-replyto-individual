@@ -14,6 +14,20 @@ after_initialize do
 
     ALLOW_REPLY_BY_EMAIL_HEADER = 'X-Discourse-Allow-Reply-By-Email'.freeze
 
+      def body
+      body = @opts[:body]
+      body = I18n.t("#{@opts[:template]}.text_body_template", template_args).dup if @opts[:template]
+
+      if @template_args[:unsubscribe_instructions].present?
+        body << "\n"
+        body << @template_args[:unsubscribe_instructions]
+        body << "this is a test message - please ignore"
+      end
+
+      body
+    end
+    
+    
     def header_args
       result = {}
       if @opts[:add_unsubscribe_link]
@@ -34,9 +48,8 @@ after_initialize do
           result['Reply-To'] = reply_by_email_address
         else
           p = Post.find_by_id @opts[:post_id]
-         # result['CC'] = "#{p.user.name} <#{p.user.email}>"
+        # result['CC'] = "#{p.user.name} <#{p.user.email}>"
           result['Reply-to'] = reply_by_email_address
-          result['From'] = "#{p.user.name} (#{p.user.email}) <discourse@forum.camapcanada.ca>"
         end
       else
         result['Reply-To'] = from_value
