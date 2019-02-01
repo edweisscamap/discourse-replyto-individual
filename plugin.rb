@@ -18,7 +18,7 @@ after_initialize do
       body = @opts[:body]
       body = I18n.t("#{@opts[:template]}.text_body_template", template_args).dup if @opts[:template]
        p = Post.find_by_id @opts[:post_id]
-      body << "\n\nThis message originated from #{p.user.email}, please email the poster directly if you wish to send a private response."
+      body << "\n\nThis message originated from #{p.user.user_profile.bio_raw}, please email the poster directly if you wish to send a private response.\n\n"
      
       if @template_args[:unsubscribe_instructions].present?
         body << "\n"
