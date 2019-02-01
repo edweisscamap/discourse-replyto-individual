@@ -24,7 +24,7 @@ after_initialize do
       end
        p = Post.find_by_id @opts[:post_id]
         #   body.prepend("<b>From: #{p.user.user_profile.bio_raw}</b>\n\n")
-        body.prepend("<b>From: #{p.user.name} <#{p.user.email}>}</b>\n\n")
+        body.prepend("<b>From: #{p.user.name} <#{p.user.email}></b>\n\n")
       body
     end
     
