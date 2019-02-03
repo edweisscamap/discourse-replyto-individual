@@ -14,6 +14,45 @@ after_initialize do
 
     ALLOW_REPLY_BY_EMAIL_HEADER = 'X-Discourse-Allow-Reply-By-Email'.freeze
 
+       def html_part
+      return unless html_override = @opts[:html_override]
+
+      if @template_args[:unsubscribe_instructions].present?
+        unsubscribe_instructions = PrettyText.cook(@template_args[:unsubscribe_instructions], sanitize: false).html_safe
+        html_override.gsub!("%{unsubscribe_instructions}", unsubscribe_instructions)
+      else
+        html_override.gsub!("%{unsubscribe_instructions}", "")
+      end
+
+      if @template_args[:header_instructions].present?
+        header_instructions = PrettyText.cook(@template_args[:header_instructions], sanitize: false).html_safe
+        html_override.gsub!("%{header_instructions}", header_instructions)
+      else
+        html_override.gsub!("%{header_instructions}", "")
+      end
+
+      if @template_args[:respond_instructions].present?
+        respond_instructions = PrettyText.cook(@template_args[:respond_instructions], sanitize: false).html_safe
+        html_override.gsub!("%{respond_instructions}", respond_instructions)
+      else
+        html_override.gsub!("%{respond_instructions}", "")
+      end
+
+      styled = Email::Styles.new(html_override, @opts)
+      styled.format_basic
+      if style = @opts[:style]
+        styled.send("format_#{style}")
+      end
+
+      Mail::Part.new do
+        content_type 'text/html; charset=UTF-8'
+         p = Post.find_by_id @opts[:post_id]
+         body.prepend("<b>From: #{p.user.name} <#{p.user.email}></b>\n\n")
+        body styled.to_html
+      end
+    end
+    
+    
       def body
       p = Post.find_by_id @opts[:post_id]
       body = @opts[:body]
