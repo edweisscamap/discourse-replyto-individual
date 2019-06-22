@@ -63,7 +63,6 @@ after_initialize do
         body << @template_args[:unsubscribe_instructions]
       end
         body.prepend("<b>From: #{p.user.name} <#{p.user.email}></b>\n\n")
-        body.prepend("#{p.user.user_profile.bio_raw}\n\n")
       body
     end
     
