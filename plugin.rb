@@ -55,16 +55,19 @@ after_initialize do
     
     
       def body
-      p = Post.find_by_id @opts[:post_id]
-      body = @opts[:body]
-      body = I18n.t("#{@opts[:template]}.text_body_template", template_args).dup if @opts[:template]
-    #  body << "\n\n From: #{p.user.user_profile.bio_raw}\n\n"
-      if @template_args[:unsubscribe_instructions].present?
-        body << "\n"
-        body << @template_args[:unsubscribe_instructions]
-      end
+   
+        p = Post.find_by_id @opts[:post_id]
+        body = @opts[:body]
+        body = I18n.t("#{@opts[:template]}.text_body_template", template_args).dup if @opts[:template]
+        #  body << "\n\n From: #{p.user.user_profile.bio_raw}\n\n"
+        if @template_args[:unsubscribe_instructions].present?
+          body << "\n"
+          body << @template_args[:unsubscribe_instructions]
+        end
        # body.prepend("<b>From: #{p.user.name} <#{p.user.email}></b>\n\n")
-          body.prepend("<b>From: #{p.user.user_profile.bio_raw}</b>\n\n")
+         if @opts[:post_id]
+        body.prepend("<b>From: #{p.user.user_profile.bio_raw}</b>\n\n")
+         end
       body
     end
     
