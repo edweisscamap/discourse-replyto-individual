@@ -46,11 +46,11 @@ after_initialize do
 
       Mail::Part.new do
         content_type 'text/html; charset=UTF-8'
+       if @opts[:post_id]
          p = Post.find_by_id @opts[:post_id]
      #   body.prepend("<b>From: #{p.user.name} <#{p.user.email}></b>\n\n")
-          if @opts[:post_id]
          body.prepend("<b>From: #{p.user.user_profile.bio_raw}</b>\n\n")
-          end
+        end
         body styled.to_html
       end
     end
